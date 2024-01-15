@@ -157,6 +157,7 @@ function ajoutProjet() {
         } else if (response.status === 201) {
             alert('Projet ajouté avec succès !');
             modalGaleriePhoto();  // Met à jour la galerie après l'ajout
+            updateGallery();
             return response.json();
         } else {
             throw new Error('Réponse inattendue du serveur');
@@ -240,7 +241,8 @@ function deleteModalGalery(id) {
     .then(response => {
         if (response.status === 200) {
             alert('Projet supprimé');
-            updateModalGallery();
+           // Mise à jour de l'affichage de la galerie après la suppression
+            modalGaleriePhoto();  
             updateGallery();
         } else if (response.status === 401) {
             alert('Veuillez vous authentifier avant de supprimer un projet !');
@@ -255,9 +257,7 @@ function deleteModalGalery(id) {
             if (deletedImage) {
                 deletedImage.remove();
             }
-            // Mise à jour de l'affichage de la galerie après la suppression
-            updateModalGallery();
-            updateGallery('0');
+
         } else {
             // La suppression a échoué
             console.error(`Échec de la suppression de l'élément avec l'ID ${id}.`);
@@ -349,4 +349,3 @@ function updateSelect(categories) {
     }
 }
 document.addEventListener('DOMContentLoaded', listeCategorie);
-
