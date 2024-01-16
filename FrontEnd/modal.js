@@ -193,6 +193,12 @@ function modalGaleriePhoto() {
             const response = await fetch('http://localhost:5678/api/works');
             const work = await response.json();
             createModalGallery(work);
+            modalBoutonRetour.classList.add('hidden');
+            modalBoutonValider.classList.add('hidden');
+            modalBoutonAjoutPhoto.classList.remove('hidden');
+
+
+
         } catch (error) {
             console.error('Erreur lors de la récupération des données de la galerie :', error);
         }
