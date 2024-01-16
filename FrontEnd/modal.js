@@ -68,6 +68,7 @@ const modalBoutonRetour = document.querySelector('#arrow');
 const modalSecond = document.querySelector('#modalSecond');
 const previewFileTitre = document.querySelector('#newProjetPhotoTitre');
 const previewFileCategorie = document.querySelector('#newProjetPhotoCategory'); 
+const previewFileImage = document.querySelector('#newPhotoMin');
 
 document.getElementById('modalAjoutPhoto').addEventListener('click', function () {
     afficherModalAjoutPhoto();
@@ -84,6 +85,10 @@ function afficherModalAjoutPhoto() {
 
         modalSecond.classList.remove('hidden');
         modalTitre.innerText = 'Ajout photo';
+
+        previewFile.innerHTML='';
+        previewFile.style.display = 'none';
+        previewFileCategorie.value='';
         previewFileTitre.value = '';
     })
 }
@@ -99,12 +104,6 @@ function retourModaleGalery(){
         // afficher/masquer les boutons ajouter/envoyer
         modalBoutonValider.classList.add('hidden');
         modalBoutonAjoutPhoto.classList.remove('hidden');
-
-        previewFile.innerHTML='';
-        previewFile.style.display = 'none';
-        previewFileCategorie.value='';
-        previewFileTitre.value = '';
-
     })
  }
  retourModaleGalery();
@@ -193,11 +192,10 @@ function modalGaleriePhoto() {
             const response = await fetch('http://localhost:5678/api/works');
             const work = await response.json();
             createModalGallery(work);
+
             modalBoutonRetour.classList.add('hidden');
-            modalBoutonValider.classList.add('hidden');
             modalBoutonAjoutPhoto.classList.remove('hidden');
-
-
+            modalBoutonValider.classList.add('hidden');
 
         } catch (error) {
             console.error('Erreur lors de la récupération des données de la galerie :', error);
