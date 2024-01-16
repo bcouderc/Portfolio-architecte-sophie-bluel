@@ -389,9 +389,9 @@ input[type="submit"]{
 	position: relative;
 }
 
-.galleryModale .crash::after{
-	content: "\f2ed"; /* Code Unicode de l'icône de la corbeille dans Font Awesome */
-	font-family: 'Font Awesome 5 Free'; /* Permet d'afficher l'icône sinon affiche le Code Unicode */
+.crash2{
+	
+
 	color: white; /* Couleur de l'icone*/
 	position: absolute;
 	height: 20px;

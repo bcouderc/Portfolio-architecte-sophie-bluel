@@ -61,7 +61,7 @@ document.querySelectorAll('.js-modal').forEach((a) => {
 const modalTitre = document.getElementById('titreModal');
 const modalFirst = document.querySelector('#modalFirst');
 
-// Déclaration des variables pour AFFICHER / MASQUER la seconde modale
+// Déclaration des letiables pour AFFICHER / MASQUER la seconde modale
 const modalBoutonAjoutPhoto = document.querySelector('#modalAjoutPhoto');
 const modalBoutonValider = document.querySelector('#modalAjoutPhoto_1');
 const modalBoutonRetour = document.querySelector('#arrow');
@@ -114,14 +114,14 @@ function retourModaleGalery(){
 
 function ajoutProjet() {
     // Récupérer les éléments DOM
-    var imageInput = document.getElementById('imagePreview');
-    var titleInput = document.getElementById('newProjetPhotoTitre');
-    var categorySelect = document.getElementById('newProjetPhotoCategory');
+    let imageInput = document.getElementById('imagePreview');
+    let titleInput = document.getElementById('newProjetPhotoTitre');
+    let categorySelect = document.getElementById('newProjetPhotoCategory');
 
     // Obtenez les valeurs des champs
-    var imageData = imageInput.files[0];
-    var titleValue = titleInput.value;
-    var categoryValue = categorySelect.value;
+    let imageData = imageInput.files[0];
+    let titleValue = titleInput.value;
+    let categoryValue = categorySelect.value;
 
     // Récupérer le token depuis le localStorage
     const token = localStorage.getItem('token');
@@ -134,7 +134,7 @@ function ajoutProjet() {
     }
 
     // Créez un objet FormData
-    var formData = new FormData();
+    let formData = new FormData();
     formData.append('image', imageData);
     formData.append('title', titleValue);
     formData.append('category', categoryValue);
@@ -150,22 +150,22 @@ function ajoutProjet() {
     })
     .then(response => {
         if (response.status === 400) {
-            alert('Veuillez vérifier les champs saisis !');
+            console.log('Veuillez vérifier les champs saisis !');
         } else if (response.status === 401) {
-            alert('Veuillez vous authentifier avant d\'ajouter un projet !');
+            console.log('Veuillez vous authentifier avant d\'ajouter un projet !');
         } else if (response.status === 201) {
-            alert('Projet ajouté avec succès !');
-            modalGaleriePhoto();  // Met à jour la galerie après l'ajout
-            updateGallery();
+            console.log('Projet ajouté avec succès !');
+            modalGaleriePhoto();  // Met à jour la galerie après l'ajout            
             return response.json();
         } else {
-            throw new Error('Réponse inattendue du serveur');
+            console.log('Réponse inattendue du serveur');
         }
     })
     .catch(error => {
         // Gérez les erreurs ici
         console.error('Erreur lors de l\'envoi de la requête fetch :', error);
     });
+    ajoutPhoto();
 }
 
 // Ajouter un écouteur d'événement au clic sur le bouton "Ajouter une photo"
@@ -208,15 +208,20 @@ function modalGaleriePhoto() {
             const newFig = document.createElement('figure');
             const imgGallery = document.createElement('img');
 
-            // Ajout d'un gestionnaire d'événements au clic de l'image
-            imgGallery.addEventListener('click', () => {
-                // Appel de la fonction pour gérer le clic avec l'ID de l'image
-                deleteModalGalery(work[i].id);
-            });
 
             imgGallery.setAttribute('src', work[i].imageUrl);
             newFig.classList.add('crash');
             newFig.id = 'vignette' + work[i].id;
+            const corbeille = document.createElement('i');
+            corbeille.classList.add('crash2', 'fa-solid', 'fa-trash-can');
+
+            // Ajout d'un gestionnaire d'événements au clic de l'image
+            corbeille.addEventListener('click', () => {
+                // Appel de la fonction pour gérer le clic avec l'ID de l'image
+                deleteModalGalery(work[i].id);
+            });
+
+            newFig.appendChild(corbeille);
             newDivGalerie.appendChild(newFig);
             newFig.appendChild(imgGallery);
         }
@@ -246,20 +251,26 @@ function deleteModalGalery(id) {
         if (response.status === 200) {
             alert('Projet supprimé');
            // Mise à jour de l'affichage de la galerie après la suppression
-            modalGaleriePhoto();  
-            updateGallery();
+            modalGaleriePhoto();
+            updateGallery();  
         } else if (response.status === 401) {
             alert('Veuillez vous authentifier avant de supprimer un projet !');
         } else {
-            throw new Error('Réponse inattendue du serveur');
+            console.log('une erreur c\'est produite');
+            console.log(response.status);
         }
         if (response.ok) {
             // La suppression a réussi
             console.log(`L'élément avec l'ID ${id} a été supprimé avec succès.`);
             // Supprimer visuellement l'image de la galerie
             const deletedImage = document.getElementById(`vignette${id}`);
+            const deleteImageIndex = document.getElementById(`figure${id}`);
             if (deletedImage) {
                 deletedImage.remove();
+                // modalGaleriePhoto();
+            }
+            if (deleteImageIndex){
+                deleteImageIndex.remove();
             }
 
         } else {
@@ -272,6 +283,9 @@ function deleteModalGalery(id) {
         console.error('Une erreur s\'est produite lors de la suppression du projet :', error);
     });
 }
+
+// Ajouter un écouteur d'événement au clic sur le bouton "supprimer une photo"
+document.getElementById('modalAjoutPhoto').addEventListener('click' , deleteModalGalery);
 
 // *****************************************************************************
 // GESTION DU PREVIEW DANS LA MODALE

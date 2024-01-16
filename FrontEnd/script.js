@@ -88,20 +88,25 @@ function createGallery(work, categoryId) {
     for (let i = 0; i < work.length; i++) {
         // Filtre des images en fonction de la catégorie sélectionnée
         if (categoryId === '0' || work[i].category.id == categoryId) {
-            const newFig = document.createElement('figure');
-            const imgGallery = document.createElement('img');
-            const imgFigcaption = document.createElement('figcaption');
-            const altLine = work[i].title;
-
-            imgGallery.setAttribute('src', `${work[i].imageUrl}`);
-            imgFigcaption.textContent = altLine;
-            imgGallery.alt = altLine;
-
-            galleryContainer.appendChild(newFig);
-            newFig.appendChild(imgGallery);
-            newFig.appendChild(imgFigcaption);
+            ajoutPhoto(work[i]);
         }
     }
+}
+
+function ajoutPhoto(workItem){
+    const newFig = document.createElement('figure');
+    const imgGallery = document.createElement('img');
+    const imgFigcaption = document.createElement('figcaption');
+    const altLine = workItem.title;
+
+    imgGallery.setAttribute('src', `${workItem.imageUrl}`);
+    imgFigcaption.textContent = altLine;
+    newFig.id='figure'+ workItem.id;
+    imgGallery.alt = altLine;
+
+    galleryContainer.appendChild(newFig);
+    newFig.appendChild(imgGallery);
+    newFig.appendChild(imgFigcaption);
 }
 
 // exécute la fonction de création des boutons
