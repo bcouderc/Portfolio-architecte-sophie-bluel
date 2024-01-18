@@ -74,6 +74,9 @@ document.getElementById('modalAjoutPhoto').addEventListener('click', function ()
     afficherModalAjoutPhoto();
 });
 
+// Permet d'afficher un message sous les catégories pour indiquer la saisie des champs
+let errorSaisie = document.getElementById('errorChamps');
+
 function afficherModalAjoutPhoto() {
     modalBoutonAjoutPhoto.addEventListener('click', function () {
         modalFirst.classList.add('hidden');
@@ -90,6 +93,7 @@ function afficherModalAjoutPhoto() {
         previewFile.style.display = 'none';
         previewFileCategorie.value='';
         previewFileTitre.value = '';
+        errorSaisie.innerHTML='';
     })
 }
 afficherModalAjoutPhoto();
@@ -107,6 +111,22 @@ function retourModaleGalery(){
     })
  }
  retourModaleGalery();
+// *****************************************************************************
+// Active le bouton pour ajouter un projet
+// ***************************************************************************** 
+function verifierChamps(){
+    let nomProjet = document.getElementById('newProjetPhotoTitre');
+    let categorieProjet = document.getElementById('newProjetPhotoCategory');
+
+    if (nomProjet !== '' && categorieProjet !== ''){
+        // Active le bouton submit
+        document.getElementById('modalAjoutPhoto_1').removeAttribute('disabled');
+    } else {
+        // désative le bouton submit
+        document.getElementById('modalAjoutPhoto_1').setAttribute('disabled');
+    }
+}
+verifierChamps();
 
  // *****************************************************************************
 // GESTION AJOUT PHOTO A LA GALERY
@@ -151,6 +171,11 @@ function ajoutProjet() {
     .then(response => {
         if (response.status === 400) {
             console.log('Veuillez vérifier les champs saisis !');
+            errorSaisie.innerHTML = 'Merci de compléter tous les champs avant de valider';
+            errorSaisie.style.color = 'red'
+            setTimeout(function() {
+                errorSaisie.classList.add("fade-out");
+              }, 2000);
         } else if (response.status === 401) {
             console.log('Veuillez vous authentifier avant d\'ajouter un projet !');
         } else if (response.status === 201) {
@@ -161,12 +186,15 @@ function ajoutProjet() {
             console.log('Réponse inattendue du serveur');
         }
     })
+
     .catch(error => {
         // Gérez les erreurs ici
         console.error('Erreur lors de l\'envoi de la requête fetch :', error);
     });
+
     ajoutPhoto();
 }
+
 
 // Ajouter un écouteur d'événement au clic sur le bouton "Ajouter une photo"
 document.getElementById('modalAjoutPhoto_1').addEventListener('click', ajoutProjet);
@@ -367,3 +395,4 @@ function updateSelect(categories) {
     }
 }
 document.addEventListener('DOMContentLoaded', listeCategorie);
+

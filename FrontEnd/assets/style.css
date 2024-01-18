@@ -384,14 +384,11 @@ input[type="submit"]{
 	border-bottom: 1px #B3B3B3 solid;
 }
 
-/* Positionnement et création du pseudo élément "corbeille" pour les vignettes */
 .galleryModale .crash{
 	position: relative;
 }
 
 .crash2{
-	
-
 	color: white; /* Couleur de l'icone*/
 	position: absolute;
 	height: 20px;
@@ -503,3 +500,15 @@ input[type="submit"]{
 	border: none;
 	color: #000;
 }
+
+/* Animation pour cacher les span d'erreur (Login et modal) */
+
+.disappear {
+	opacity: 1;
+	transition: opacity 2s ease-out;
+  }
+  
+.disappear.fade-out {
+	opacity: 0;
+  }
+  
