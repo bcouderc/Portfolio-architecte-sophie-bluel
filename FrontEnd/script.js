@@ -1,12 +1,4 @@
-// Vérifier dans le local storage si présence du token
-// Si TOKEN modifier le LOGIN en LOGOUT dans la page index.html
-// 1-Masquer les boutons filtres
-// 2-Afficher une span "Modifier" à côté de "Mes projets"
-// 3-Afficher une span au-dessus du header "Mode dition"
-// puis,
-// Supprimer le token à la déconnexion removItem("token") 
-// refaire à l'inverse les point 1 à 3
-
+// Déclaration des variables globales
 let token = window.localStorage.getItem('token');
 let work = [];
 let categorie = [];
@@ -25,7 +17,7 @@ if (token) {
     showLoggedOut();
 }
 // *****************************************************************************
-// GESTION DE LA GALERY EN FONCTION DE L'ID DE LA CATEGORIE
+// BOUTONS FILTRES
 // *****************************************************************************
 
 // Récupération des données du serveur
@@ -43,7 +35,7 @@ async function createButtons() {
 
         //event.target permet de renvoyer la cible sur laquelle on a cliqué
         const categoryId = event.target.getAttribute('data-category');
-
+        // Création de la gallery en fonction de l'ID
         if (categoryId !== null) {
             updateGallery(categoryId);
         }
@@ -72,9 +64,6 @@ function recupCategorie(categorie) {
 const galleryContainer = document.querySelector('.gallery');
 
 async function updateGallery(categoryId) {
-    // Connection à l'API pour récupérer les travaux
-    // const response = await fetch('http://localhost:5678/api/works');
-    // galerie = await response.json();
     work = await fetch ('http://localhost:5678/api/works').then(work => work.json());
     // appel de la fonction createGallery avec les données JSON en tant qu'argument
     createGallery(work, categoryId);
@@ -84,7 +73,6 @@ async function updateGallery(categoryId) {
 function createGallery(work, categoryId) {
     // Effacement de la galerie
     galleryContainer.innerHTML = '';
-
     for (let i = 0; i < work.length; i++) {
         // Filtre des images en fonction de la catégorie sélectionnée
         if (categoryId === '0' || work[i].category.id == categoryId) {
@@ -108,15 +96,14 @@ function ajoutPhoto(workItem){
     newFig.appendChild(imgGallery);
     newFig.appendChild(imgFigcaption);
 }
-
-// exécute la fonction de création des boutons
+// création des boutons de filtres
 createButtons();
 
 // exécute la fonction de mise à jour de la galerie avec la catégorie par défaut (0 pour "Tous")
 updateGallery('0');
 
 // *****************************************************************************
-// GESTION DU CLIC SUR LE BOUTON LOGIN / LOGOUT
+// LOGIN / LOGOUT
 // *****************************************************************************
 
 // Gestionnaire d'événement pour le clic sur le bouton de connexion/déconnexion

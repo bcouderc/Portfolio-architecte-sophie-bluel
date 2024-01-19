@@ -192,7 +192,7 @@ function ajoutProjet() {
         console.error('Erreur lors de l\'envoi de la requête fetch :', error);
     });
 
-    ajoutPhoto();
+    ajoutPhoto(response);
 }
 
 
@@ -233,30 +233,33 @@ function modalGaleriePhoto() {
     // Ajout des photos dans la galerie
     function createModalGallery(work) {
         for (let i = 0; i < work.length; i++) {
-            const newFig = document.createElement('figure');
-            const imgGallery = document.createElement('img');
-
-
-            imgGallery.setAttribute('src', work[i].imageUrl);
-            newFig.classList.add('crash');
-            newFig.id = 'vignette' + work[i].id;
-            const corbeille = document.createElement('i');
-            corbeille.classList.add('crash2', 'fa-solid', 'fa-trash-can');
-
-            // Ajout d'un gestionnaire d'événements au clic de l'image
-            corbeille.addEventListener('click', () => {
-                // Appel de la fonction pour gérer le clic avec l'ID de l'image
-                deleteModalGalery(work[i].id);
-            });
-
-            newFig.appendChild(corbeille);
-            newDivGalerie.appendChild(newFig);
-            newFig.appendChild(imgGallery);
+            ajoutPhoto(work[i]);
         }
     }
-
     updateModalGallery();
 }
+
+function ajoutPhoto(photoItem){
+    const newFig = document.createElement('figure');
+    const imgGallery = document.createElement('img');
+
+    imgGallery.setAttribute('src', photoItem.imageUrl);
+    newFig.classList.add('crash');
+    newFig.id = 'vignette' + photoItem.id;
+    const corbeille = document.createElement('i');
+    corbeille.classList.add('crash2', 'fa-solid', 'fa-trash-can');
+
+    // Ajout d'un gestionnaire d'événements au clic de l'image
+    corbeille.addEventListener('click', () => {
+        // Appel de la fonction pour gérer le clic avec l'ID de l'image
+        deleteModalGalery(photoItem.id);
+    });
+
+    newFig.appendChild(corbeille);
+    newDivGalerie.appendChild(newFig);
+    newFig.appendChild(imgGallery);
+}
+
 // *****************************************************************************
 // GESTION SUPPRESSION DE LA GALLERY PHOTO
 // *****************************************************************************
@@ -295,7 +298,6 @@ function deleteModalGalery(id) {
             const deleteImageIndex = document.getElementById(`figure${id}`);
             if (deletedImage) {
                 deletedImage.remove();
-                // modalGaleriePhoto();
             }
             if (deleteImageIndex){
                 deleteImageIndex.remove();
