@@ -186,13 +186,13 @@ function ajoutProjet() {
             console.log('Réponse inattendue du serveur');
         }
     })
-
+    .then(response =>{
+        ajoutPhoto(response);
+    })
     .catch(error => {
         // Gérez les erreurs ici
         console.error('Erreur lors de l\'envoi de la requête fetch :', error);
     });
-
-    ajoutPhoto(response);
 }
 
 
