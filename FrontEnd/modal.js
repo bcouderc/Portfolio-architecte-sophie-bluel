@@ -54,14 +54,14 @@ document.querySelectorAll('.js-modal').forEach((a) => {
 
 
 // *****************************************************************************
-// GESTION DE LA GALLERY PHOTO (affichage des div modalFirst et modalSecond)
+// MINIATURE DE LA MODAL (affichage des div modalFirst et modalSecond)
 // *****************************************************************************
 
 // Fonction pour mettre à jour la galerie dans la fenêtre modal
 const modalTitre = document.getElementById('titreModal');
 const modalFirst = document.querySelector('#modalFirst');
 
-// Déclaration des letiables pour AFFICHER / MASQUER la seconde modale
+// Déclaration des variables pour AFFICHER / MASQUER la seconde modale
 const modalBoutonAjoutPhoto = document.querySelector('#modalAjoutPhoto');
 const modalBoutonValider = document.querySelector('#modalAjoutPhoto_1');
 const modalBoutonRetour = document.querySelector('#arrow');
@@ -112,7 +112,7 @@ function retourModaleGalery(){
  }
  retourModaleGalery();
 // *****************************************************************************
-// Active le bouton pour ajouter un projet
+// VERIFICATION : LES CHAMPS PROJET ET CATEGORIE NE DOIVENT PAS ETRE VIDE
 // ***************************************************************************** 
 function verifierChamps(){
     let nomProjet = document.getElementById('newProjetPhotoTitre');
@@ -129,7 +129,7 @@ function verifierChamps(){
 verifierChamps();
 
  // *****************************************************************************
-// GESTION AJOUT PHOTO A LA GALERY
+// AJOUT MINIATURE A LA MODAL ET PAGE INDEX
 // *****************************************************************************
 
 function ajoutProjet() {
@@ -138,7 +138,7 @@ function ajoutProjet() {
     let titleInput = document.getElementById('newProjetPhotoTitre');
     let categorySelect = document.getElementById('newProjetPhotoCategory');
 
-    // Obtenez les valeurs des champs
+    // Récupérer les valeurs des champs
     let imageData = imageInput.files[0];
     let titleValue = titleInput.value;
     let categoryValue = categorySelect.value;
@@ -147,7 +147,7 @@ function ajoutProjet() {
     const token = localStorage.getItem('token');
     console.log(token);
 
-    // Vérifier si le token est présent
+    // Le token est présent...
     if (!token) {
         alert('Veuillez vous authentifier avant d\'ajouter un projet !');
         return;
@@ -186,17 +186,15 @@ function ajoutProjet() {
             console.log('Réponse inattendue du serveur');
         }
     })
-    .then(response =>{
+    .then(response => {
         ajoutPhoto(response);
     })
     .catch(error => {
-        // Gérez les erreurs ici
         console.error('Erreur lors de l\'envoi de la requête fetch :', error);
     });
 }
 
-
-// Ajouter un écouteur d'événement au clic sur le bouton "Ajouter une photo"
+// Déclenche ajoutProjet au clic sur le bouton "Ajouter une photo"
 document.getElementById('modalAjoutPhoto_1').addEventListener('click', ajoutProjet);
 
 // Fonction pour mettre à jour la galerie dans la fenêtre modal
@@ -240,10 +238,11 @@ function modalGaleriePhoto() {
             imgGallery.setAttribute('src', work[i].imageUrl);
             newFig.classList.add('crash');
             newFig.id = 'vignette' + work[i].id;
+            // affiche une corbeille sur la vignette
             const corbeille = document.createElement('i');
             corbeille.classList.add('crash2', 'fa-solid', 'fa-trash-can');
 
-            // Ajout d'un gestionnaire d'événements au clic de l'image
+            // Ajout d'un gestionnaire d'événements au clic sur la corbeille
             corbeille.addEventListener('click', () => {
                 // Appel de la fonction pour gérer le clic avec l'ID de l'image
                 deleteModalGalery(work[i].id);
@@ -254,18 +253,18 @@ function modalGaleriePhoto() {
             newFig.appendChild(imgGallery);
         }
     }
+
     updateModalGallery();
 }
-
-
 // *****************************************************************************
-// GESTION SUPPRESSION DE LA GALLERY PHOTO
+// SUPPRESSION D'UNE IMAGE LA GALLERIE PHOTO
 // *****************************************************************************
 function deleteModalGalery(id) {
     const token = localStorage.getItem('token');
     if (!token) {
         console.error('Token manquant dans le localStorage.');
-        // Gérer le cas où le token est manquant, par exemple rediriger vers la page de connexion.
+        // Si token est manquant, redirection vers la page de connexion.
+        logIn();
         return;
     }
 
@@ -273,15 +272,14 @@ function deleteModalGalery(id) {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${token}`,
-            // Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
     })
     .then(response => {
         if (response.status === 200) {
             alert('Projet supprimé');
-           // Mise à jour de l'affichage de la galerie après la suppression
-            modalGaleriePhoto();
-            updateGallery();  
+        //    // Mise à jour de l'affichage de la galerie après la suppression
+        //     modalGaleriePhoto();
+        //     updateGallery();  
         } else if (response.status === 401) {
             alert('Veuillez vous authentifier avant de supprimer un projet !');
         } else {
@@ -291,12 +289,14 @@ function deleteModalGalery(id) {
         if (response.ok) {
             // La suppression a réussi
             console.log(`L'élément avec l'ID ${id} a été supprimé avec succès.`);
-            // Supprimer visuellement l'image de la galerie
+            // Suppression visuelle l'image
             const deletedImage = document.getElementById(`vignette${id}`);
             const deleteImageIndex = document.getElementById(`figure${id}`);
+            // de la modale
             if (deletedImage) {
                 deletedImage.remove();
             }
+            // de la page index
             if (deleteImageIndex){
                 deleteImageIndex.remove();
             }
@@ -312,11 +312,11 @@ function deleteModalGalery(id) {
     });
 }
 
-// Ajouter un écouteur d'événement au clic sur le bouton "supprimer une photo"
+// Déclenche deleteModalGalery au clic sur le bouton "supprimer une photo"
 document.getElementById('modalAjoutPhoto').addEventListener('click' , deleteModalGalery);
 
 // *****************************************************************************
-// GESTION DU PREVIEW DANS LA MODALE
+// PREVIEW CHARGEMENT PHOTO
 // *****************************************************************************
 
 // Bouton de sélection de l'image
@@ -335,19 +335,19 @@ const file_extension_regex = /\.(jpg|jpeg|png)$/i;
 
 console.log(previewFileTitre); 
 
-selectImage.addEventListener('click', function(){
-    inputFile.click();
-});
-
+// Vérifie si aucun fichier n'a été sélectionné
+// ou si le fichier sélectionné n'a pas l'extension autorisée
 inputFile.addEventListener('change', function(){
     if (this.files.length === 0 || !file_extension_regex.test(this.files[0].name)) {
         return;
     };
     
+    // Traitement de l'image sélectionnée
     const image = this.files[0];
 
-    // console.log(image);
+    // Si l'image ne pas dépasse pas les 4Mo
     if(image.size < 4000000){
+        // Lecture et affichage de l'image
         const reader = new FileReader();
 
         reader.onload = ()=> {
@@ -362,13 +362,14 @@ inputFile.addEventListener('change', function(){
     reader.readAsDataURL(image);
     } else {
         alert('L\'image dépasse les 4Mo');
-    }
-    
+    }    
 });
    
 // *****************************************************************************
-// GESTION DU CONTROLE SELECT
-// ***************************************************************************** 
+// ALIMENTATION DU CONTROLE SELECT
+// *****************************************************************************
+
+// Récupération des catégories sur l'API
 async function listeCategorie() {
     try {
         const response = await fetch('http://localhost:5678/api/categories');

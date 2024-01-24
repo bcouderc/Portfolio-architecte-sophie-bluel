@@ -30,11 +30,11 @@ function connexionFormulaire() {
                 let myErrorMail = document.getElementById('errorEmail')
                 myErrorMail.innerHTML = 'Utilisateur non reconnu';
                 myErrorMail.style.color = 'red'
+                // Ajoute la classe permettant de faire disparaitre la DIV
                 setTimeout(function() {
                     errorEmail.classList.add("fade-out");
                   }, 1000);
-                // alert('Utilisateur non reconnu');
-
+                  
             } else {
                 return response.json(); // retourne une promesse contenant les données JSON
             }

@@ -1,4 +1,14 @@
-// Déclaration des variables globales
+// Ajustement du Body en fonction de l'affichage ou non du mode édition
+document.addEventListener('DOMContentLoaded', function (){
+    // récupération de la hauteur de la navBarre
+    let navBarHauteur = document.querySelector('.connectionNavBarre').offsetHeight;
+    console.log('navBarHauteur');
+    // ajoute la hauteur de la navBarre au margin top pour décaler le haut de la page d'autant de PX
+    document.body.style.marginTop = navBarHauteur + 40 + 'px';
+});
+
+// *****************************************************************************
+
 let token = window.localStorage.getItem('token');
 let work = [];
 let categorie = [];
@@ -17,7 +27,7 @@ if (token) {
     showLoggedOut();
 }
 // *****************************************************************************
-// BOUTONS FILTRES
+// GESTION DE LA GALERY EN FONCTION DE L'ID DE LA CATEGORIE
 // *****************************************************************************
 
 // Récupération des données du serveur
@@ -35,7 +45,7 @@ async function createButtons() {
 
         //event.target permet de renvoyer la cible sur laquelle on a cliqué
         const categoryId = event.target.getAttribute('data-category');
-        // Création de la gallery en fonction de l'ID
+
         if (categoryId !== null) {
             updateGallery(categoryId);
         }
@@ -64,6 +74,9 @@ function recupCategorie(categorie) {
 const galleryContainer = document.querySelector('.gallery');
 
 async function updateGallery(categoryId) {
+    // Connection à l'API pour récupérer les travaux
+    // const response = await fetch('http://localhost:5678/api/works');
+    // galerie = await response.json();
     work = await fetch ('http://localhost:5678/api/works').then(work => work.json());
     // appel de la fonction createGallery avec les données JSON en tant qu'argument
     createGallery(work, categoryId);
@@ -73,6 +86,7 @@ async function updateGallery(categoryId) {
 function createGallery(work, categoryId) {
     // Effacement de la galerie
     galleryContainer.innerHTML = '';
+
     for (let i = 0; i < work.length; i++) {
         // Filtre des images en fonction de la catégorie sélectionnée
         if (categoryId === '0' || work[i].category.id == categoryId) {
@@ -96,14 +110,15 @@ function ajoutPhoto(workItem){
     newFig.appendChild(imgGallery);
     newFig.appendChild(imgFigcaption);
 }
-// création des boutons de filtres
+
+// exécute la fonction de création des boutons
 createButtons();
 
 // exécute la fonction de mise à jour de la galerie avec la catégorie par défaut (0 pour "Tous")
 updateGallery('0');
 
 // *****************************************************************************
-// LOGIN / LOGOUT
+// GESTION DU CLIC SUR LE BOUTON LOGIN / LOGOUT
 // *****************************************************************************
 
 // Gestionnaire d'événement pour le clic sur le bouton de connexion/déconnexion
@@ -112,6 +127,8 @@ loginLogout.addEventListener('click', function () {
         // Si connecté, effectue les actions de déconnexion
         window.localStorage.removeItem('token');
         showLoggedOut();
+        // recharge la page
+        location.reload();
     } else {
         // Si déconnecté, redirige vers la page de connexion seulement si le bouton de connexion est cliqué
         logIn();
